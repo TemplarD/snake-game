@@ -892,6 +892,13 @@
     state.canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
     state.canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
     state.canvas.addEventListener('touchmove', preventTouchScroll, { passive: false });
+    
+    // Блокируем click события от браузера (генерируются после touch)
+    state.canvas.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      return false;
+    }, { capture: true });
   }
 
   function preventTouchScroll(e) {
@@ -940,70 +947,41 @@
   }
 
   function handleTapOnCanvas(tapX, tapY) {
-    // Проверка что игра активна
-    if (!state.gameRunning || state.isPaused || state.isGameOver) {
-      return;
-    }
-    
-    // Проверка что змейка существует
-    if (!state.snake || state.snake.length === 0) {
-      return;
-    }
-    
+    // Get snake head position on screen
     const head = state.snake[0];
     const rect = state.canvas.getBoundingClientRect();
-
-    // Проверка что тап был внутри canvas
-    if (tapX < rect.left || tapX > rect.right || tapY < rect.top || tapY > rect.bottom) {
-      return;
-    }
-
+    
     // Calculate head position relative to canvas
     const headX = rect.left + (head.x / state.canvas.width) * rect.width;
     const headY = rect.top + (head.y / state.canvas.height) * rect.height;
-
+    
     // Calculate tap position relative to head
     const relX = tapX - headX;
     const relY = tapY - headY;
-
+    
+    // Determine which side of the head was tapped
+    // Use absolute values to find dominant direction
     const absRelX = Math.abs(relX);
     const absRelY = Math.abs(relY);
-
+    
+    // Get current direction and possible turns
     const opposites = { up: 'down', down: 'up', left: 'right', right: 'left' };
     const currentDir = state.direction;
-
-    // For EASY difficulty: tap anywhere on the screen side
-    // For MEDIUM/HARD: tap relative to head position
+    
+    // Determine tap direction based on which side of head was tapped
     let tapDirection;
-
-    if (state.difficulty === 'easy') {
-      // Easy mode: divide canvas into 4 quadrants from center
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      const fromCenterX = tapX - centerX;
-      const fromCenterY = tapY - centerY;
-
-      // Более надёжное определение направления
-      if (Math.abs(fromCenterX) > Math.abs(fromCenterY)) {
-        tapDirection = fromCenterX > 0 ? 'right' : 'left';
-      } else {
-        tapDirection = fromCenterY > 0 ? 'down' : 'up';
-      }
+    if (absRelX > absRelY) {
+      // Horizontal tap (left or right of head)
+      tapDirection = relX > 0 ? 'right' : 'left';
     } else {
-      // Medium/Hard: relative to head
-      if (absRelX > absRelY) {
-        tapDirection = relX > 0 ? 'right' : 'left';
-      } else {
-        tapDirection = relY > 0 ? 'down' : 'up';
-      }
+      // Vertical tap (above or below head)
+      tapDirection = relY > 0 ? 'down' : 'up';
     }
-
-    // Filter opposite direction - немедленная смена направления
-    if (tapDirection && tapDirection !== opposites[currentDir]) {
+    
+    // Only change direction if it's not the opposite of current direction
+    if (tapDirection !== opposites[currentDir]) {
       const keyMap = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
-      // Прямое изменение nextDirection для мгновенного отклика
-      state.nextDirection = keyMap[tapDirection];
+      setDirection(keyMap[tapDirection]);
     }
   }
 
@@ -1290,7 +1268,7 @@
       tr.innerHTML = `
         <td class="rank">${index + 1}</td>
         <td class="score">${entry.score}</td>
-        <td class="difficulty ${diffSettings.class}">${diffSettings.label[t.locale === 'ru' ? 'ru' : 'en']}</td>
+        <td class="difficulty ${diffSettings.class}">${diffSettings.label[state.locale]}</td>
       `;
       tbody.appendChild(tr);
     });
