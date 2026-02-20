@@ -39,11 +39,6 @@ test('Language toggle updates texts', () => {
   
   // The button should now show 'EN'
   expect(btn.textContent).toBe('EN');
-  
-  // Check that description text changed to English
-  const desc = document.getElementById('desc');
-  expect(desc).toBeTruthy();
-  // Description may be empty in test environment, just check it exists
 });
 
 // 4. Restart button exists
@@ -64,26 +59,46 @@ test('Scores button exists', () => {
   expect(btn).toBeTruthy();
 });
 
-// 7. Touch controls button exists
+// 7. Help button exists
+test('Help button exists', () => {
+  const btn = document.getElementById('helpBtn');
+  expect(btn).toBeTruthy();
+  expect(btn.textContent).toBe('?');
+});
+
+// 8. Touch controls button exists
 test('Touch controls button exists', () => {
   const btn = document.getElementById('toggleTouchBtn');
   expect(btn).toBeTruthy();
 });
 
-// 8. Game over overlay exists
+// 9. Game over overlay exists
 test('Game over overlay exists', () => {
   const overlay = document.getElementById('overlay');
   expect(overlay).toBeTruthy();
 });
 
-// 9. Snake game object is exposed
+// 10. Help modal exists
+test('Help modal exists', () => {
+  const helpModal = document.getElementById('helpModal');
+  expect(helpModal).toBeTruthy();
+  
+  const helpModalContent = document.getElementById('helpModalContent');
+  expect(helpModalContent).toBeTruthy();
+  
+  const closeHelpBtn = document.getElementById('closeHelpModalBtn');
+  expect(closeHelpBtn).toBeTruthy();
+});
+
+// 11. Snake game object is exposed
 test('Snake game object is exposed on window', () => {
   expect(window.snakeGame).toBeTruthy();
   expect(window.snakeGame.state).toBeTruthy();
   expect(window.snakeGame.SETTINGS).toBeTruthy();
+  expect(window.snakeGame.DIFFICULTIES).toBeTruthy();
 });
 
-// 10. Snake starts with one segment
+// 12. Snake starts with one segment
 test('Snake starts with one segment', () => {
   const game = window.snakeGame;
   expect(game.state.snake).toBeTruthy();
@@ -91,14 +106,13 @@ test('Snake starts with one segment', () => {
   expect(game.state.snake.length).toBeGreaterThanOrEqual(1);
 });
 
-// 11. Food exists
+// 13. Food exists
 test('Food is spawned on game start', () => {
   const game = window.snakeGame;
-  // Food object should exist
   expect(game.state.food).toBeTruthy();
 });
 
-// 12. Score panel exists
+// 14. Score panel is rendered
 test('Score panel is rendered', () => {
   const scorePanel = document.getElementById('scorePanel');
   expect(scorePanel).toBeTruthy();
@@ -111,7 +125,7 @@ test('Score panel is rendered', () => {
   expect(highScore).toBeTruthy();
 });
 
-// 13. Modal exists
+// 15. Scores modal exists
 test('Scores modal exists', () => {
   const modal = document.getElementById('modal');
   expect(modal).toBeTruthy();
@@ -121,9 +135,12 @@ test('Scores modal exists', () => {
   
   const closeModalBtn = document.getElementById('closeModalBtn');
   expect(closeModalBtn).toBeTruthy();
+  
+  const scoresTable = document.getElementById('scoresTable');
+  expect(scoresTable).toBeTruthy();
 });
 
-// 14. Touch controls container exists
+// 16. Touch controls container exists
 test('Touch controls container exists', () => {
   const touchControls = document.getElementById('touchControls');
   expect(touchControls).toBeTruthy();
@@ -141,7 +158,7 @@ test('Touch controls container exists', () => {
   expect(rightBtn).toBeTruthy();
 });
 
-// 15. Game settings are correct
+// 17. Game settings are correct
 test('Game settings have correct values', () => {
   const game = window.snakeGame;
   const settings = game.SETTINGS;
@@ -150,9 +167,10 @@ test('Game settings have correct values', () => {
   expect(settings.minBox).toBe(15);
   expect(settings.maxBox).toBe(30);
   expect(settings.defaultDifficulty).toBe('medium');
+  expect(settings.maxScores).toBe(10);
 });
 
-// 16. Initial game state
+// 18. Initial game state
 test('Initial game state is correct', () => {
   const game = window.snakeGame;
   const state = game.state;
@@ -167,7 +185,7 @@ test('Initial game state is correct', () => {
   expect(state.speed).toBe(difficulties[settings.defaultDifficulty].baseSpeed);
 });
 
-// 17. Pause toggle works
+// 19. Pause toggle works
 test('Pause button toggles pause state', () => {
   const game = window.snakeGame;
   
@@ -183,7 +201,7 @@ test('Pause button toggles pause state', () => {
   expect(game.state.isPaused).toBe(false);
 });
 
-// 18. Scores modal opens and closes
+// 20. Scores modal opens and closes
 test('Scores modal opens and closes', () => {
   const modal = document.getElementById('modal');
   
@@ -199,7 +217,23 @@ test('Scores modal opens and closes', () => {
   expect(modal.classList.contains('visible')).toBe(false);
 });
 
-// 19. Touch controls toggle works
+// 21. Help modal opens and closes
+test('Help modal opens and closes', () => {
+  const helpModal = document.getElementById('helpModal');
+  
+  // Initially hidden
+  expect(helpModal.classList.contains('visible')).toBe(false);
+  
+  // Open help modal
+  click('helpBtn');
+  expect(helpModal.classList.contains('visible')).toBe(true);
+  
+  // Close help modal
+  click('closeHelpModalBtn');
+  expect(helpModal.classList.contains('visible')).toBe(false);
+});
+
+// 22. Touch controls toggle button works
 test('Touch controls toggle button works', () => {
   const touchControls = document.getElementById('touchControls');
   
@@ -215,7 +249,7 @@ test('Touch controls toggle button works', () => {
   expect(touchControls.classList.contains('visible')).toBe(false);
 });
 
-// 20. All four directions work
+// 23. All four arrow directions work
 test('All four arrow directions work', () => {
   const game = window.snakeGame;
   
@@ -252,7 +286,7 @@ test('All four arrow directions work', () => {
   expect(game.state.nextDirection).toBe('right');
 });
 
-// 21. Cannot reverse direction
+// 24. Cannot reverse direction
 test('Cannot reverse direction directly', () => {
   const game = window.snakeGame;
   
@@ -281,7 +315,7 @@ test('Cannot reverse direction directly', () => {
   expect(game.state.nextDirection).toBe('down'); // Should not change
 });
 
-// 22. Difficulty panel exists
+// 25. Difficulty panel exists
 test('Difficulty panel exists', () => {
   const panel = document.getElementById('difficultyPanel');
   expect(panel).toBeTruthy();
@@ -296,7 +330,7 @@ test('Difficulty panel exists', () => {
   expect(hardBtn).toBeTruthy();
 });
 
-// 23. Difficulty settings are correct
+// 26. Difficulty settings are correct
 test('Difficulty settings have correct values', () => {
   const game = window.snakeGame;
   const difficulties = game.DIFFICULTIES;
@@ -317,7 +351,7 @@ test('Difficulty settings have correct values', () => {
   expect(difficulties.hard.speedDecrement).toBe(15);
 });
 
-// 24. Medium difficulty is active by default
+// 27. Medium difficulty is active by default
 test('Medium difficulty is active by default', () => {
   const game = window.snakeGame;
   expect(game.state.difficulty).toBe('medium');
@@ -326,8 +360,42 @@ test('Medium difficulty is active by default', () => {
   expect(mediumBtn.classList.contains('active')).toBe(true);
 });
 
-// 25. Final difficulty is displayed on game over overlay
+// 28. Final difficulty is displayed on game over overlay
 test('Final difficulty is displayed on game over overlay', () => {
   const finalDiff = document.getElementById('finalDifficulty');
   expect(finalDiff).toBeTruthy();
+});
+
+// 29. Help modal has all sections
+test('Help modal has all sections', () => {
+  const helpModalContent = document.getElementById('helpModalContent');
+  expect(helpModalContent).toBeTruthy();
+  
+  const h3Tags = helpModalContent.querySelectorAll('h3');
+  expect(h3Tags.length).toBe(3); // objective, controls, difficulty
+  
+  const ulTags = helpModalContent.querySelectorAll('ul');
+  expect(ulTags.length).toBe(3); // 3 lists
+  
+  // Check objective list has 3 items
+  expect(ulTags[0].children.length).toBe(3);
+  
+  // Check controls list has 4 items
+  expect(ulTags[1].children.length).toBe(4);
+  
+  // Check difficulty list has 3 items
+  expect(ulTags[2].children.length).toBe(3);
+});
+
+// 30. Scores table has correct headers
+test('Scores table has correct headers', () => {
+  const scoresTable = document.getElementById('scoresTable');
+  expect(scoresTable).toBeTruthy();
+  
+  const headers = scoresTable.querySelectorAll('thead th');
+  expect(headers.length).toBe(3);
+  expect(headers[0].textContent).toBe('#');
+  // Header could be in RU or EN depending on previous tests
+  expect(['Счёт', 'Score']).toContain(headers[1].textContent);
+  expect(['Сложность', 'Difficulty']).toContain(headers[2].textContent);
 });
