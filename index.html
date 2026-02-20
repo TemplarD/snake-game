@@ -884,19 +884,44 @@
 
   // -------------------- Touch Gestures --------------------
   function setupTouchGestures() {
-    state.canvas.addEventListener('touchstart', handleTouchStart, { passive: false, capture: true });
-    state.canvas.addEventListener('touchend', handleTouchEnd, { passive: false, capture: true });
-    state.canvas.addEventListener('touchmove', preventTouchScroll, { passive: false, capture: true });
+    // Отключаем стандартное поведение для всех touch событий на canvas
+    state.canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleTouchStart(e);
+    }, { passive: false, capture: true });
+    
+    state.canvas.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleTouchEnd(e);
+    }, { passive: false, capture: true });
+    
+    state.canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, { passive: false, capture: true });
+    
+    // Отключаем click события чтобы предотвратить game over от кликов
+    state.canvas.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }, { capture: true });
   }
 
   function preventTouchScroll(e) {
     e.preventDefault();
+    e.stopPropagation();
   }
 
   function handleTouchStart(e) {
     e.preventDefault();
+    e.stopPropagation();
+    
     // Проверка что игра активна перед обработкой
-    if (!state.gameRunning || state.isPaused || state.isGameOver) return;
+    if (!state.gameRunning || state.isPaused || state.isGameOver) {
+      return;
+    }
     
     const touch = e.changedTouches[0];
     state.touchStartX = touch.clientX;
@@ -906,8 +931,12 @@
 
   function handleTouchEnd(e) {
     e.preventDefault();
+    e.stopPropagation();
+    
     // Проверка что игра активна
-    if (!state.gameRunning || state.isPaused || state.isGameOver) return;
+    if (!state.gameRunning || state.isPaused || state.isGameOver) {
+      return;
+    }
     
     const touch = e.changedTouches[0];
     const dx = touch.clientX - state.touchStartX;
@@ -1223,7 +1252,7 @@
     $('#restartOverlayBtn').textContent = t.restart;
     $('#closeModalBtn').textContent = t.close;
     $('#closeHelpModalBtn').textContent = t.close;
-    
+
     // Update score panel labels
     $$('span.label[data-i18n="scoreLabel"]').forEach(el => {
       el.textContent = t.scoreLabel;
@@ -1231,50 +1260,12 @@
     $$('span.label[data-i18n="bestLabel"]').forEach(el => {
       el.textContent = t.bestLabel;
     });
-    
-    // Update help modal
+
+    // Update help modal title
     $('#helpModal h2').textContent = t.help;
     
-    // Update help modal content
-    const helpTexts = {
-      objective: t.objective,
-      obj1: t.obj1,
-      obj2: t.obj2,
-      obj3: t.obj3,
-      controls: t.controls,
-      ctrl1: t.ctrl1,
-      ctrl2: t.ctrl2,
-      ctrl3: t.ctrl3,
-      diff1: t.diff1,
-      diff2: t.diff2,
-      diff3: t.diff3
-    };
-    
-    // Update objective section
-    const objectiveH3 = $('#helpModalContent h3[data-i18n="objective"]');
-    if (objectiveH3) objectiveH3.textContent = t.objective;
-    
-    const objItems = $('#helpModalContent ul').children;
-    if (objItems.length >= 3) {
-      objItems[0].textContent = t.obj1;
-      objItems[1].textContent = t.obj2;
-      objItems[2].textContent = t.obj3;
-    }
-    
-    // Update controls section
-    const controlsH3 = $('#helpModalContent h3[data-i18n="controls"]');
-    if (controlsH3) controlsH3.textContent = t.controls;
-    
-    // Update difficulty section
-    const diffH3 = $('#helpModalContent h3[data-i18n="difficulty"]');
-    if (diffH3) diffH3.textContent = t.difficulty;
-    
-    const diffItems = $('#helpModalContent h3[data-i18n="difficulty"]').parentElement.nextElementSibling.children;
-    if (diffItems.length >= 3) {
-      diffItems[0].textContent = t.diff1;
-      diffItems[1].textContent = t.diff2;
-      diffItems[2].textContent = t.diff3;
-    }
+    // Update help modal content using dedicated function
+    updateHelpModalContent();
 
     $$('#difficultyPanel button').forEach(btn => {
       const diff = btn.dataset.difficulty;
@@ -1300,11 +1291,6 @@
     // Refresh scores table if modal is open
     if ($('#modal').classList.contains('visible')) {
       populateScoresTable();
-    }
-    
-    // Refresh help modal if open
-    if ($('#helpModal').classList.contains('visible')) {
-      updateHelpModalContent();
     }
   }
 
