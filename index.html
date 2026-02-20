@@ -521,7 +521,7 @@
       
       <h3 data-i18n="controls">Управление</h3>
       <ul>
-        <li><span class="key">↑</span> <span class="key">↓</span> <span class="key">←</span> <span class="key">→</span> — движение (ПК)</li>
+        <li data-i18n="ctrl0"><span class="key">↑</span> <span class="key">↓</span> <span class="key">←</span> <span class="key">→</span> — движение (ПК)</li>
         <li data-i18n="ctrl1">Свайпы — движение (смартфон)</li>
         <li data-i18n="ctrl2">Тапы по экрану — направление</li>
         <li data-i18n="ctrl3">Кнопки внизу — для точного управления</li>
@@ -594,6 +594,7 @@
         obj2: 'Избегайте столкновений со стенами',
         obj3: 'Не врезайтесь в собственный хвост',
         controls: 'Управление',
+        ctrl0: '↑ ↓ ← → — движение (ПК)',
         ctrl1: 'Свайпы — движение (смартфон)',
         ctrl2: 'Тапы по экрану — направление',
         ctrl3: 'Кнопки внизу — для точного управления',
@@ -629,6 +630,7 @@
         obj2: 'Avoid wall collisions',
         obj3: 'Do not hit your own tail',
         controls: 'Controls',
+        ctrl0: '↑ ↓ ← → — move (PC)',
         ctrl1: 'Swipes — move (smartphone)',
         ctrl2: 'Taps on screen — direction',
         ctrl3: 'Bottom buttons — precise control',
@@ -882,9 +884,9 @@
 
   // -------------------- Touch Gestures --------------------
   function setupTouchGestures() {
-    state.canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-    state.canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
-    state.canvas.addEventListener('touchmove', preventTouchScroll, { passive: false });
+    state.canvas.addEventListener('touchstart', handleTouchStart, { passive: false, capture: true });
+    state.canvas.addEventListener('touchend', handleTouchEnd, { passive: false, capture: true });
+    state.canvas.addEventListener('touchmove', preventTouchScroll, { passive: false, capture: true });
   }
 
   function preventTouchScroll(e) {
@@ -937,10 +939,22 @@
 
   function handleTapOnCanvas(tapX, tapY) {
     // Проверка что игра активна
-    if (!state.gameRunning || state.isPaused || state.isGameOver) return;
+    if (!state.gameRunning || state.isPaused || state.isGameOver) {
+      return;
+    }
+    
+    // Проверка что змейка существует
+    if (!state.snake || state.snake.length === 0) {
+      return;
+    }
     
     const head = state.snake[0];
     const rect = state.canvas.getBoundingClientRect();
+
+    // Проверка что тап был внутри canvas
+    if (tapX < rect.left || tapX > rect.right || tapY < rect.top || tapY > rect.bottom) {
+      return;
+    }
 
     // Calculate head position relative to canvas
     const headX = rect.left + (head.x / state.canvas.width) * rect.width;
@@ -1369,8 +1383,9 @@
       ulTags[0].children[2].textContent = t.obj3;
     }
     
-    // Controls list (4 items - first has keyboard, rest are text)
+    // Controls list (4 items)
     if (ulTags[1]) {
+      ulTags[1].children[0].textContent = t.ctrl0;
       ulTags[1].children[1].textContent = t.ctrl1;
       ulTags[1].children[2].textContent = t.ctrl2;
       ulTags[1].children[3].textContent = t.ctrl3;
