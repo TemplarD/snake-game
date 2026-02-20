@@ -139,6 +139,8 @@
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* Controls */
@@ -894,68 +896,10 @@
   }
 
   // -------------------- Touch Gestures --------------------
-  let touchHandled = false;
-  let lastTouchEndTime = 0;
-  
   function setupTouchGestures() {
-    // Отключаем стандартное поведение для всех touch событий на canvas
-    state.canvas.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      touchHandled = false;
-      handleTouchStart(e);
-    }, { passive: false, capture: true });
-    
-    state.canvas.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      touchHandled = true;
-      lastTouchEndTime = Date.now();
-      handleTouchEnd(e);
-    }, { passive: false, capture: true });
-    
-    state.canvas.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      touchHandled = true;
-    }, { passive: false, capture: true });
-    
-    state.canvas.addEventListener('touchcancel', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      touchHandled = true;
-    }, { passive: false, capture: true });
-    
-    // Блокируем ВСЕ mouse события на canvas
-    state.canvas.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    }, { capture: true, passive: false });
-    
-    state.canvas.addEventListener('mouseup', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    }, { capture: true, passive: false });
-    
-    // Блокируем click полностью (особенно после touch)
-    state.canvas.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      // Блокируем click если был touch в последние 500ms
-      if (touchHandled || (Date.now() - lastTouchEndTime) < 500) {
-        touchHandled = false;
-        return false;
-      }
-      return false;
-    }, { capture: true, passive: false });
-    
-    state.canvas.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      return false;
-    }, { capture: true, passive: false });
+    state.canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    state.canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+    state.canvas.addEventListener('touchmove', preventTouchScroll, { passive: false });
   }
 
   function preventTouchScroll(e) {
@@ -966,12 +910,6 @@
   function handleTouchStart(e) {
     e.preventDefault();
     e.stopPropagation();
-    
-    // Проверка что игра активна перед обработкой
-    if (!state.gameRunning || state.isPaused || state.isGameOver) {
-      return;
-    }
-    
     const touch = e.changedTouches[0];
     state.touchStartX = touch.clientX;
     state.touchStartY = touch.clientY;
@@ -981,36 +919,30 @@
   function handleTouchEnd(e) {
     e.preventDefault();
     e.stopPropagation();
-    
-    // Проверка что игра активна
-    if (!state.gameRunning || state.isPaused || state.isGameOver) {
-      return;
-    }
-    
     const touch = e.changedTouches[0];
     const dx = touch.clientX - state.touchStartX;
     const dy = touch.clientY - state.touchStartY;
     const elapsed = Date.now() - state.lastTouchTime;
-
-    const minSwipe = 20;
-    const maxTapTime = 200;
-    const tapThreshold = 20;
-
+    
+    const minSwipe = 30;
+    const maxTapTime = 250;
+    const tapThreshold = 15;
+    
     // Tap detection
     if (elapsed < maxTapTime && Math.abs(dx) < tapThreshold && Math.abs(dy) < tapThreshold) {
       handleTapOnCanvas(touch.clientX, touch.clientY);
       return;
     }
-
+    
     // Swipe detection
     if (Math.abs(dx) < minSwipe && Math.abs(dy) < minSwipe) return;
-
+    
     if (Math.abs(dx) > Math.abs(dy)) {
       setDirection(dx > 0 ? 'ArrowRight' : 'ArrowLeft');
     } else {
       setDirection(dy > 0 ? 'ArrowDown' : 'ArrowUp');
     }
-
+    
     state.touchStartX = 0;
     state.touchStartY = 0;
   }
