@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang='ru'>
+<head>
+<meta charset='UTF-8'>
+<title>Змейка</title>
+<style>
+  body { 
+    margin:0; 
+    font-family:Arial; 
+    background:#f0f0f0; 
+    display:flex; 
+    flex-direction:column; 
+    align-items:center; 
+    justify-content:center; 
+    min-height:100vh; 
+    overflow:hidden; 
+  }
+  #wrapper {
+    position:relative;
+    width:100%;
+    max-width:90vw;
+    max-height:70vh;
+    text-align:center;
+  }
+  #game {
+    background:#fff;
+    border:2px solid #333;
+    width:100%;
+    height:100%;
+    max-width:100%;
+    max-height:100%;
+    /* Scale but keep aspect ratio */
+    width:100%;
+    height:100%;
+  }
+  #controls {
+    margin-top:10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+  #controls button {
+    padding:6px 12px;
+    font-size:14px;
+    background:#2196F3;
+    color:#fff;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+  }
+  #controls button:hover { background:#1976F3; }
+  #desc {
+    margin-top:5px;
+    color:#555;
+    font-size:14px;
+    text-align:center;
+  }
+  #overlay {
+    position:absolute;
+    top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.7);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    visibility:hidden;
+  }
+  #overlay.show { visibility:visible; }
+  #touchStrips {
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    pointer-events:auto;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+  }
+  .touch-strip {
+    width:80px;
+    height:48px;
+    background:rgba(0,0,0,0.1);
+    font-size:28px;
+    line-height:48px;
+    color:#fff;
+    border-radius:12px;
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+  .touch-strip.active {
+    background:linear-gradient(to right, rgba(255,0,0,0.5), transparent);
+  }
+  #stripTop { top:5%; width:80%; }
+  .touch-strip.top { top:5%; }
+  #stripBottom { bottom:5%; }
+  .touch-strip.bottom { bottom:5%; }
+  #stripLeft { left:5%; width:12%; height:80%; }
+  .touch-strip.left { left:5%; }
+  #stripRight { right:5%; width:12%; height:80%; }
+  .touch-strip.right { right:5%; }
+  #modeToggleBtn, #showTouchBtn {
+    margin-top:12px;
+    padding:6px 12px;
+    font-size:14px;
+    background:#2196F3;
+    color:#fff;
+    border:none;
+    border-radius:4px;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+<wrapper>
+<canvas id='game' width='400' height='400'></canvas>
+<div id='controls'>
+  <button id='restartBtn'>Перезапуск</button>
+  <button id='pauseBtn'>Пауза</button>
+  <button id='modeToggleBtn'>Переключить управление</button>
+  <button id='showTouchBtn'>Показать управление</button>
+</div>
+<p id='desc'>Управление: стрелки или касания по краям экрана. Кнопки не мешают игре.</p>
+<div id='touchStrips'>
+  <div id='stripTop' class='touch-strip top'>↑</div>
+  <div id='stripBottom' class='touch-strip bottom'>↓</div>
+  <div id='stripLeft' class='touch-strip left'>←</div>
+  <div id='stripRight' class='touch-strip right'>→</div>
+</div>
+<div id='overlay'><br><br><br><br><br><br>
+  <div style='font-size:28px; font-weight:bold;'>ИГРА ОКОНЧЕНА</div>
+  <div style='font-size:20px;'>Счёт: <span id='finalScore'></span></div>
+  <button id='restartOverlayBtn' style='margin-top:20px; padding:10px 20px; font-size:16px; background:#2196F3; color:#fff; border:none; border-radius:6px;'>Перезапуск</button>
+</div>
+
+<script>
+  const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+  let useTouchControls = false;
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const box = 20;
+  const initialDelay = 150;
+  let delay = initialDelay;
+  let snake = [{x: 3*box, y: 3*box}];
+  let dir = 'right';
+  let food = {x: 5*box, y: 5*box};
+  let score = 0;
+  let gameRunning = true;
+  let intervalId = null;
+
+  const overlay = document.getElementById('overlay');
+  const finalScoreSpan = document.getElementById('finalScore');
+  const restartOverlayBtn = document.getElementById('restartOverlayBtn');
+  restartOverlayBtn.addEventListener('click', restartGame);
+
+  const restartBtn = document.getElementById('restartBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const modeToggleBtn = document.getElementById('modeToggleBtn');
+  const showTouchBtn = document.getElementById('showTouchBtn');
+  const touchStrips = document.getElementById('touchStrips');
+  const stripTop = document.getElementById('stripTop');
+  const stripBottom = document.getElementById('stripBottom');
+  const stripLeft = document.getElementById('stripLeft');
+  const stripRight = document.getElementById('stripRight');
+  const finalScoreSpanOverlay = document.getElementById('finalScore');
+
+  function positionStrips() {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    stripTop.style.width = '80vw';
+    stripTop.style.height = '12vh';
+    stripTop.style.left = '10%';
+    stripTop.style.top = '5%';
+    stripBottom.style.width = '80vw';
+    stripBottom.style.height = '12vh';
+    stripBottom.style.left = '10%';
+    stripBottom.style.bottom = '5%';
+    stripLeft.style.width = '12vw';
+    stripLeft.style.height = '80vh';
+    stripLeft.style.left = '5%';
+    stripLeft.style.top = '15%';
+    stripRight.style.width = '12vw';
+    stripRight.style.height = '80vh';
+    stripRight.style.left = '88%';
+    stripRight.style.top = '15%';
+  }
+  positionStrips();
+  window.addEventListener('resize', positionStrips);
+
+  function setDirection(direction) {
+    dir = direction;
+  }
+
+  function handleStripTouch(e, strip, direction) {
+    e.stopPropagation();
+    strip.classList.add('active');
+    setDirection(direction);
+    if (!intervalId) {
+      intervalId = setInterval(draw, delay);
+    }
+    const onEnd = () => {
+      strip.classList.remove('active');
+      strip.removeEventListener('touchend', onEnd);
+    };
+    strip.addEventListener('touchend', onEnd);
+  }
+
+  stripTop.addEventListener('touchstart', (e) => handleStripTouch(e, stripTop, 'up'));
+  stripBottom.addEventListener('touchstart', (e) => handleStripTouch(e, stripBottom, 'down'));
+  stripLeft.addEventListener('touchstart', (e) => handleStripTouch(e, stripLeft, 'left'));
+  stripRight.addEventListener('touchstart', (e) => handleStripTouch(e, stripRight, 'right'));
+  stripTop.addEventListener('mousedown', (e) => handleStripTouch(e, stripTop, 'up'));
+  stripBottom.addEventListener('mousedown', (e) => handleStripTouch(e, stripBottom, 'down'));
+  stripLeft.addEventListener('mousedown', (e) => handleStripTouch(e, stripLeft, 'left'));
+  stripRight.addEventListener('mousedown', (e) => handleStripTouch(e, stripRight, 'right'));
+
+  document.addEventListener('keydown', function(e){
+    if (!gameRunning) return;
+    if(e.key == 'ArrowLeft' && dir != 'right') dir='left';
+    if(e.key == 'ArrowRight' && dir != 'left') dir='right';
+    if(e.key == 'ArrowUp' && dir != 'down') dir='up';
+    if(e.key == 'ArrowDown' && dir != 'up') dir='down';
+  });
+
+  restartBtn.addEventListener('click', restartGame);
+  pauseBtn.addEventListener('click', togglePause);
+  modeToggleBtn.addEventListener('click', toggleControlMode);
+  showTouchBtn.addEventListener('click', () => {
+    const currentlyShown = touchStrips.style.display === 'flex';
+    touchStrips.style.display = currentlyShown ? 'none' : 'flex';
+    showTouchBtn.textContent = currentlyShown ? 'Показать управление' : 'Скрыть управление';
+  });
+
+  function restartGame() {
+    snake = [{x: 3*box, y: 3*box}];
+    dir = 'right';
+    food = {x: 5*box, y: 5*box};
+    score = 0;
+    delay = initialDelay;
+    gameRunning = true;
+    overlay.classList.remove('show');
+    clearInterval(intervalId);
+    intervalId = setInterval(draw, delay);
+  }
+
+  function togglePause() {
+    if (gameRunning) {
+      clearInterval(intervalId);
+      gameRunning = false;
+      pauseBtn.textContent = 'Продолжить';
+    } else {
+      intervalId = setInterval(draw, delay);
+      gameRunning = true;
+      pauseBtn.textContent = 'Пауза';
+    }
+  }
+
+  function toggleControlMode() {
+    useTouchControls = !useTouchControls;
+    const currentlyShown = touchStrips.style.display === 'flex';
+    if (currentlyShown) {
+      touchStrips.style.display = 'none';
+      modeToggleBtn.textContent = 'Переключить управление';
+    } else {
+      touchStrips.style.display = 'flex';
+      modeToggleBtn.textContent = 'Клавиатурное управление';
+    }
+  }
+
+  function draw() {
+    let nx = snake[0].x;
+    let ny = snake[0].y;
+    if (dir == 'left') nx -= box;
+    if (dir == 'right') nx += box;
+    if (dir == 'up') ny -= box;
+    if (dir == 'down') ny += box;
+
+    if (nx < 0 || nx >= canvas.width || ny < 0 || ny >= canvas.height) {
+      gameOver();
+      return;
+    }
+
+    for (let i = 1; i < snake.length; i++) {
+      if (nx == snake[i].x && ny == snake[i].y) {
+        gameOver();
+        return;
+      }
+    }
+
+    snake.unshift({x: nx, y: ny});
+
+    if (nx == food.x && ny == food.y) {
+      score++;
+      delay = Math.max(50, delay - 5);
+      food = {x: Math.floor(Math.random()*19+1)*box, y: Math.floor(Math.random()*19+1)*box};
+    } else {
+      snake.pop();
+    }
+
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#090';
+    snake.forEach(part => {
+      ctx.fillRect(part.x, part.y, box, box);
+    });
+    ctx.fillStyle = '#f00';
+    ctx.fillRect(food.x, food.y, box, box);
+
+    ctx.fillStyle = '#000';
+    ctx.font = '16px Arial';
+    ctx.fillText('Счёт: '+score, 10, 15);
+  }
+
+  function gameOver() {
+    gameRunning = false;
+    clearInterval(intervalId);
+    finalScoreSpan.textContent = score;
+    overlay.classList.add('show');
+  }
+
+  restartGame();
+</script>
+</body>
+</html>
