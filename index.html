@@ -27,6 +27,7 @@
     background: rgba(255,255,255,0.1);
     border-radius: 8px;
     margin-bottom: 0.4rem;
+    flex-shrink: 0;
   }
   #difficultyPanel button {
     padding: 0.35rem 0.6rem;
@@ -38,6 +39,8 @@
     cursor: pointer;
     transition: all 0.2s;
     font-weight: 500;
+    white-space: nowrap;
+    min-width: 70px;
   }
   #difficultyPanel button:hover {
     background: rgba(255,255,255,0.25);
@@ -60,6 +63,8 @@
     margin-bottom: 0.4rem;
     font-size: clamp(0.85rem, 2.2vw, 1.1rem);
     position: relative;
+    flex-shrink: 0;
+    min-height: 40px;
   }
   #helpBtn {
     position: absolute;
@@ -127,10 +132,12 @@
     width: 100%;
     max-width: min(600px, 90vw);
     margin-top: 0.4rem;
+    flex-shrink: 0;
+    min-height: 44px;
   }
   #controls button {
     flex: 1 1 calc(20% - 0.4rem);
-    min-width: 65px;
+    min-width: 70px;
     padding: 0.6rem 0.4rem;
     font-size: clamp(0.7rem, 1.8vw, 0.9rem);
     border: none;
@@ -141,6 +148,7 @@
     touch-action: manipulation;
     transition: all 0.2s;
     font-weight: 500;
+    white-space: nowrap;
   }
   #controls button:hover {
     background: linear-gradient(145deg, #2563eb, #1d4ed8);
@@ -1196,6 +1204,47 @@
     
     // Update help modal
     $('#helpModal h2').textContent = t.help;
+    
+    // Update help modal content
+    const helpTexts = {
+      objective: t.objective,
+      obj1: t.obj1,
+      obj2: t.obj2,
+      obj3: t.obj3,
+      controls: t.controls,
+      ctrl1: t.ctrl1,
+      ctrl2: t.ctrl2,
+      ctrl3: t.ctrl3,
+      diff1: t.diff1,
+      diff2: t.diff2,
+      diff3: t.diff3
+    };
+    
+    // Update objective section
+    const objectiveH3 = $('#helpModalContent h3[data-i18n="objective"]');
+    if (objectiveH3) objectiveH3.textContent = t.objective;
+    
+    const objItems = $('#helpModalContent ul').children;
+    if (objItems.length >= 3) {
+      objItems[0].textContent = t.obj1;
+      objItems[1].textContent = t.obj2;
+      objItems[2].textContent = t.obj3;
+    }
+    
+    // Update controls section
+    const controlsH3 = $('#helpModalContent h3[data-i18n="controls"]');
+    if (controlsH3) controlsH3.textContent = t.controls;
+    
+    // Update difficulty section
+    const diffH3 = $('#helpModalContent h3[data-i18n="difficulty"]');
+    if (diffH3) diffH3.textContent = t.difficulty;
+    
+    const diffItems = $('#helpModalContent h3[data-i18n="difficulty"]').parentElement.nextElementSibling.children;
+    if (diffItems.length >= 3) {
+      diffItems[0].textContent = t.diff1;
+      diffItems[1].textContent = t.diff2;
+      diffItems[2].textContent = t.diff3;
+    }
 
     $$('#difficultyPanel button').forEach(btn => {
       const diff = btn.dataset.difficulty;
@@ -1221,6 +1270,11 @@
     // Refresh scores table if modal is open
     if ($('#modal').classList.contains('visible')) {
       populateScoresTable();
+    }
+    
+    // Refresh help modal if open
+    if ($('#helpModal').classList.contains('visible')) {
+      updateHelpModalContent();
     }
   }
 
@@ -1276,6 +1330,35 @@
 
   function closeHelpModal() {
     $('#helpModal').classList.remove('visible');
+  }
+
+  function updateHelpModalContent() {
+    const t = state.currentTexts;
+    
+    $('#helpModal h2').textContent = t.help;
+    
+    const objectiveH3 = $('#helpModalContent h3[data-i18n="objective"]');
+    if (objectiveH3) objectiveH3.textContent = t.objective;
+    
+    const objList = $('#helpModalContent h3[data-i18n="objective"]').nextElementSibling;
+    if (objList) {
+      objList.children[0].textContent = t.obj1;
+      objList.children[1].textContent = t.obj2;
+      objList.children[2].textContent = t.obj3;
+    }
+    
+    const controlsH3 = $('#helpModalContent h3[data-i18n="controls"]');
+    if (controlsH3) controlsH3.textContent = t.controls;
+    
+    const diffH3 = $('#helpModalContent h3[data-i18n="difficulty"]');
+    if (diffH3) diffH3.textContent = t.difficulty;
+    
+    const diffList = $('#helpModalContent h3[data-i18n="difficulty"]').nextElementSibling;
+    if (diffList) {
+      diffList.children[0].textContent = t.diff1;
+      diffList.children[1].textContent = t.diff2;
+      diffList.children[2].textContent = t.diff3;
+    }
   }
 
   $('#modal').addEventListener('click', (e) => {
