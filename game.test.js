@@ -399,3 +399,85 @@ test('Scores table has correct headers', () => {
   expect(['Счёт', 'Score']).toContain(headers[1].textContent);
   expect(['Сложность', 'Difficulty']).toContain(headers[2].textContent);
 });
+
+// 31. UI layout does not change significantly on language toggle
+test('UI layout does not change significantly on language toggle', () => {
+  const scorePanel = document.getElementById('scorePanel');
+  const controls = document.getElementById('controls');
+  const difficultyPanel = document.getElementById('difficultyPanel');
+  
+  // Get initial dimensions
+  const scorePanelHeight = scorePanel.offsetHeight;
+  const controlsHeight = controls.offsetHeight;
+  const difficultyPanelHeight = difficultyPanel.offsetHeight;
+  
+  // Toggle language
+  click('langToggleBtn');
+  
+  // Check dimensions are similar (within 5px tolerance)
+  expect(Math.abs(scorePanel.offsetHeight - scorePanelHeight)).toBeLessThanOrEqual(5);
+  expect(Math.abs(controls.offsetHeight - controlsHeight)).toBeLessThanOrEqual(5);
+  expect(Math.abs(difficultyPanel.offsetHeight - difficultyPanelHeight)).toBeLessThanOrEqual(5);
+});
+
+// 32. Touch events on canvas do not trigger game over
+test('Touch events on canvas do not trigger game over', () => {
+  const game = window.snakeGame;
+  const canvas = document.getElementById('gameCanvas');
+  
+  // Game should be running initially
+  expect(game.state.gameRunning).toBe(true);
+  expect(game.state.isGameOver).toBe(false);
+  
+  // Simulate touchstart
+  const touchStartEvent = new window.TouchEvent('touchstart', {
+    bubbles: true,
+    cancelable: true,
+    changedTouches: [{ clientX: 100, clientY: 100 }]
+  });
+  canvas.dispatchEvent(touchStartEvent);
+  
+  // Simulate touchend
+  const touchEndEvent = new window.TouchEvent('touchend', {
+    bubbles: true,
+    cancelable: true,
+    changedTouches: [{ clientX: 100, clientY: 100 }]
+  });
+  canvas.dispatchEvent(touchEndEvent);
+  
+  // Game should still be running (not game over)
+  expect(game.state.gameRunning).toBe(true);
+  expect(game.state.isGameOver).toBe(false);
+});
+
+// 33. Click events after touch are blocked
+test('Click events after touch are blocked', () => {
+  const game = window.snakeGame;
+  const canvas = document.getElementById('gameCanvas');
+  
+  // Simulate touch followed by click
+  const touchStartEvent = new window.TouchEvent('touchstart', {
+    bubbles: true,
+    cancelable: true,
+    changedTouches: [{ clientX: 100, clientY: 100 }]
+  });
+  canvas.dispatchEvent(touchStartEvent);
+  
+  const touchEndEvent = new window.TouchEvent('touchend', {
+    bubbles: true,
+    cancelable: true,
+    changedTouches: [{ clientX: 100, clientY: 100 }]
+  });
+  canvas.dispatchEvent(touchEndEvent);
+  
+  // Simulate click that browser might generate
+  const clickEvent = new window.MouseEvent('click', {
+    bubbles: true,
+    cancelable: true
+  });
+  canvas.dispatchEvent(clickEvent);
+  
+  // Game should still be running
+  expect(game.state.gameRunning).toBe(true);
+  expect(game.state.isGameOver).toBe(false);
+});

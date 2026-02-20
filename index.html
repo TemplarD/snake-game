@@ -6,6 +6,10 @@
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'>
 <style>
   * { box-sizing: border-box; margin: 0; }
+  html {
+    font-size: 16px;
+    zoom: 1;
+  }
   html, body {
     height: 100%;
     overflow: hidden;
@@ -15,11 +19,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 0.5rem;
+    padding: 8px;
     color: #fff;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-zoom: none;
+    zoom: none;
   }
   
   /* Difficulty buttons */
@@ -889,6 +895,7 @@
 
   // -------------------- Touch Gestures --------------------
   let touchHandled = false;
+  let lastTouchEndTime = 0;
   
   function setupTouchGestures() {
     // Отключаем стандартное поведение для всех touch событий на canvas
@@ -903,6 +910,7 @@
       e.preventDefault();
       e.stopPropagation();
       touchHandled = true;
+      lastTouchEndTime = Date.now();
       handleTouchEnd(e);
     }, { passive: false, capture: true });
     
@@ -918,30 +926,36 @@
       touchHandled = true;
     }, { passive: false, capture: true });
     
-    // Блокируем все mouse события чтобы предотвратить game over от кликов
+    // Блокируем ВСЕ mouse события на canvas
     state.canvas.addEventListener('mousedown', (e) => {
       e.preventDefault();
       e.stopPropagation();
-    }, { capture: true });
+      return false;
+    }, { capture: true, passive: false });
     
     state.canvas.addEventListener('mouseup', (e) => {
       e.preventDefault();
       e.stopPropagation();
-    }, { capture: true });
+      return false;
+    }, { capture: true, passive: false });
     
-    // Блокируем click только если был touch
+    // Блокируем click полностью (особенно после touch)
     state.canvas.addEventListener('click', (e) => {
-      if (touchHandled) {
-        e.preventDefault();
-        e.stopPropagation();
+      e.preventDefault();
+      e.stopPropagation();
+      // Блокируем click если был touch в последние 500ms
+      if (touchHandled || (Date.now() - lastTouchEndTime) < 500) {
         touchHandled = false;
+        return false;
       }
-    }, { capture: true });
+      return false;
+    }, { capture: true, passive: false });
     
     state.canvas.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       e.stopPropagation();
-    }, { capture: true });
+      return false;
+    }, { capture: true, passive: false });
   }
 
   function preventTouchScroll(e) {
