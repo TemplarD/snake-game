@@ -22,15 +22,15 @@
   /* Difficulty buttons */
   #difficultyPanel {
     display: flex;
-    gap: 0.5rem;
-    padding: 0.5rem;
+    gap: 0.4rem;
+    padding: 0.4rem;
     background: rgba(255,255,255,0.1);
     border-radius: 8px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
   }
   #difficultyPanel button {
-    padding: 0.4rem 0.8rem;
-    font-size: clamp(0.75rem, 2vw, 0.9rem);
+    padding: 0.35rem 0.6rem;
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
     border: 2px solid transparent;
     border-radius: 6px;
     background: rgba(255,255,255,0.15);
@@ -53,12 +53,12 @@
   /* Score panel */
   #scorePanel {
     display: flex;
-    gap: 1rem;
-    padding: 0.5rem 1rem;
+    gap: 0.8rem;
+    padding: 0.4rem 0.8rem;
     background: rgba(255,255,255,0.1);
     border-radius: 8px;
-    margin-bottom: 0.5rem;
-    font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+    margin-bottom: 0.4rem;
+    font-size: clamp(0.85rem, 2.2vw, 1.1rem);
   }
   #scorePanel span {
     display: flex;
@@ -75,12 +75,6 @@
   #scorePanel .value.high {
     color: #fbbf24;
   }
-  #scorePanel .difficulty-indicator {
-    font-size: 0.8em;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.2);
-  }
 
   /* Game container */
   #gameContainer {
@@ -88,7 +82,7 @@
     max-width: min(600px, 90vw);
     aspect-ratio: 1/1;
     position: relative;
-    margin: 0.5rem 0;
+    margin: 0.4rem 0;
   }
   canvas {
     background: #fff;
@@ -104,17 +98,17 @@
   #controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
     justify-content: center;
     width: 100%;
     max-width: min(600px, 90vw);
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
   }
   #controls button {
-    flex: 1 1 calc(20% - 0.5rem);
-    min-width: 70px;
-    padding: 0.7rem 0.5rem;
-    font-size: clamp(0.75rem, 2vw, 0.95rem);
+    flex: 1 1 calc(20% - 0.4rem);
+    min-width: 65px;
+    padding: 0.6rem 0.4rem;
+    font-size: clamp(0.7rem, 1.8vw, 0.9rem);
     border: none;
     border-radius: 8px;
     background: linear-gradient(145deg, #3b82f6, #2563eb);
@@ -143,18 +137,18 @@
 
   /* Description */
   #desc {
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
     text-align: center;
     color: #aaa;
-    font-size: clamp(0.75rem, 2vw, 0.9rem);
+    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
     max-width: 600px;
     padding: 0 1rem;
   }
 
-  /* Touch controls (on-screen buttons) - moved to bottom */
+  /* Touch controls - smaller and positioned higher */
   #touchControls {
     position: fixed;
-    bottom: 1%;
+    bottom: max(2%, env(safe-area-inset-bottom, 2%));
     left: 50%;
     transform: translateX(-50%);
     display: grid;
@@ -162,7 +156,7 @@
       ". up ."
       "left . right"
       ". down .";
-    grid-gap: 0.25rem;
+    grid-gap: 0.2rem;
     visibility: hidden;
     pointer-events: none;
     z-index: 100;
@@ -172,9 +166,9 @@
     pointer-events: auto;
   }
   #touchControls button {
-    width: clamp(45px, 10vw, 60px);
-    height: clamp(45px, 10vw, 60px);
-    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+    width: clamp(40px, 9vw, 55px);
+    height: clamp(40px, 9vw, 55px);
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
     background: rgba(74, 222, 128, 0.3);
     color: #fff;
     border: 2px solid rgba(74, 222, 128, 0.5);
@@ -215,9 +209,9 @@
     opacity: 1;
   }
   #overlay h1 {
-    font-size: clamp(2rem, 8vw, 3rem);
+    font-size: clamp(1.8rem, 7vw, 2.8rem);
     color: #ef4444;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
     text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
     animation: pulse 1.5s infinite;
   }
@@ -226,22 +220,22 @@
     50% { transform: scale(1.05); }
   }
   #overlay #finalScore {
-    font-size: clamp(1.2rem, 4vw, 1.5rem);
-    margin-bottom: 0.5rem;
+    font-size: clamp(1.1rem, 3.5vw, 1.4rem);
+    margin-bottom: 0.4rem;
   }
   #overlay #finalHighScore {
-    font-size: clamp(1rem, 3vw, 1.2rem);
+    font-size: clamp(0.95rem, 3vw, 1.15rem);
     color: #fbbf24;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
   }
   #overlay #finalDifficulty {
-    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
     color: #aaa;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
   }
   #overlay button {
-    padding: 1rem 2rem;
-    font-size: clamp(1rem, 3vw, 1.2rem);
+    padding: 0.9rem 1.8rem;
+    font-size: clamp(0.95rem, 2.8vw, 1.15rem);
     background: linear-gradient(145deg, #10b981, #059669);
     color: #fff;
     border: none;
@@ -278,53 +272,54 @@
   }
   #modalContent {
     background: linear-gradient(145deg, #1e293b, #0f172a);
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 16px;
     text-align: center;
     border: 2px solid #4ade80;
     box-shadow: 0 10px 40px rgba(74, 222, 128, 0.3);
     max-width: 90vw;
-    width: 400px;
-    max-height: 80vh;
+    width: min(400px, 95vw);
+    max-height: 75vh;
     overflow-y: auto;
   }
   #modalContent h2 {
-    font-size: clamp(1.5rem, 5vw, 2rem);
-    margin-bottom: 1.5rem;
+    font-size: clamp(1.4rem, 4.5vw, 1.8rem);
+    margin-bottom: 1.2rem;
     color: #fbbf24;
   }
-  #modalContent .scoreItem {
-    font-size: clamp(1.1rem, 4vw, 1.3rem);
-    margin: 0.8rem 0;
-    padding: 1rem;
-    background: rgba(255,255,255,0.1);
-    border-radius: 8px;
+  
+  /* Scores table */
+  #scoresTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
   }
-  #modalContent .scoreItem .label {
-    color: #aaa;
-    display: block;
-    font-size: 0.9em;
+  #scoresTable th, #scoresTable td {
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
   }
-  #modalContent .scoreItem .value {
-    font-size: 1.8em;
-    font-weight: bold;
-    color: #4ade80;
+  #scoresTable th {
+    color: #fbbf24;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    background: #1e293b;
   }
-  #modalContent .scoreItem .difficulty {
-    font-size: 0.8em;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    display: inline-block;
-    margin-top: 0.3rem;
+  #scoresTable tr:hover {
+    background: rgba(255,255,255,0.05);
   }
-  #modalContent .scoreItem .difficulty.easy { background: rgba(34, 197, 94, 0.3); }
-  #modalContent .scoreItem .difficulty.medium { background: rgba(251, 191, 36, 0.3); }
-  #modalContent .scoreItem .difficulty.hard { background: rgba(239, 68, 68, 0.3); }
+  #scoresTable .rank { color: #aaa; width: 30px; }
+  #scoresTable .score { color: #4ade80; font-weight: bold; }
+  #scoresTable .difficulty { font-size: 0.85em; }
+  #scoresTable .difficulty.easy { color: #22c55e; }
+  #scoresTable .difficulty.medium { color: #fbbf24; }
+  #scoresTable .difficulty.hard { color: #ef4444; }
   
   #modalContent button {
-    margin-top: 1.5rem;
-    padding: 0.8rem 2rem;
-    font-size: clamp(1rem, 3vw, 1.1rem);
+    margin-top: 1.2rem;
+    padding: 0.7rem 1.8rem;
+    font-size: clamp(0.95rem, 2.8vw, 1.1rem);
     background: linear-gradient(145deg, #3b82f6, #2563eb);
     color: #fff;
     border: none;
@@ -341,16 +336,35 @@
     html, body {
       padding: 0.25rem;
     }
-    #controls {
+    #difficultyPanel {
       gap: 0.3rem;
+      padding: 0.3rem;
+    }
+    #difficultyPanel button {
+      padding: 0.3rem 0.5rem;
+      font-size: 0.75rem;
+    }
+    #scorePanel {
+      gap: 0.5rem;
+      padding: 0.35rem 0.6rem;
+      font-size: 0.85rem;
+    }
+    #controls {
+      gap: 0.25rem;
     }
     #controls button {
-      min-width: 65px;
-      padding: 0.5rem 0.3rem;
-      font-size: 0.8rem;
+      min-width: 60px;
+      padding: 0.5rem 0.25rem;
+      font-size: 0.75rem;
     }
     #touchControls {
-      bottom: 0.5%;
+      bottom: max(1%, env(safe-area-inset-bottom, 1%));
+      grid-gap: 0.15rem;
+    }
+    #touchControls button {
+      width: clamp(38px, 8.5vw, 50px);
+      height: clamp(38px, 8.5vw, 50px);
+      font-size: 1.1rem;
     }
   }
 </style>
@@ -366,8 +380,8 @@
 
 <!-- Score Panel -->
 <div id="scorePanel">
-  <span><span class="label" data-i18n="score">Счёт:</span> <span class="value" id="currentScore">0</span></span>
-  <span><span class="label" data-i18n="best">Рекорд:</span> <span class="value high" id="highScore">0</span></span>
+  <span><span class="label" data-i18n="scoreLabel">Счёт:</span> <span class="value" id="currentScore">0</span></span>
+  <span><span class="label" data-i18n="bestLabel">Рекорд:</span> <span class="value high" id="highScore">0</span></span>
 </div>
 
 <!-- Game Container -->
@@ -408,18 +422,18 @@
 <div id="modal">
   <div id="modalContent">
     <h2 data-i18n="highScores">Рекорды</h2>
-    <div id="scoresList">
-      <div class="scoreItem">
-        <span class="label" data-i18n="currentScore">Текущий счёт</span>
-        <span class="value" id="modalCurrentScore">0</span>
-        <span class="difficulty medium" id="modalDifficulty">Средний</span>
-      </div>
-      <div class="scoreItem">
-        <span class="label" data-i18n="bestScore">Лучший счёт</span>
-        <span class="value high" id="modalHighScore">0</span>
-        <span class="difficulty medium" id="modalHighDifficulty">Средний</span>
-      </div>
-    </div>
+    <table id="scoresTable">
+      <thead>
+        <tr>
+          <th data-i18n="rank">#</th>
+          <th data-i18n="score">Счёт</th>
+          <th data-i18n="difficulty">Сложность</th>
+        </tr>
+      </thead>
+      <tbody id="scoresTableBody">
+        <!-- Scores will be populated dynamically -->
+      </tbody>
+    </table>
     <button id="closeModalBtn" data-i18n="close">Закрыть</button>
   </div>
 </div>
@@ -454,53 +468,58 @@
   };
 
   const SETTINGS = {
-    gridSize: 20,          // Количество ячеек (20x20)
-    minBox: 15,            // Минимальный размер кубика (px)
-    maxBox: 30,            // Максимальный размер кубика (px)
+    gridSize: 20,
+    minBox: 15,
+    maxBox: 30,
     defaultDifficulty: 'medium',
     locale: 'ru',
+    maxScores: 10,
     texts: {
       ru: {
-        score: 'Счёт:',
-        best: 'Рекорд:',
+        scoreLabel: 'Счёт:',
+        bestLabel: 'Рекорд:',
+        score: 'Счёт',
+        best: 'Рекорд',
+        rank: '#',
+        difficulty: 'Сложность',
         gameOver: 'GAME OVER',
         restart: 'Играть снова',
         pause: 'Пауза',
         resume: 'Продолжить',
         scores: 'Рекорды',
+        highScores: 'Таблица рекордов',
         touch: 'Touch: ',
         touchOn: 'ВКЛ',
         touchOff: 'ВЫКЛ',
-        highScores: 'Рекорды',
-        currentScore: 'Текущий счёт',
-        bestScore: 'Лучший счёт',
         close: 'Закрыть',
         easy: 'Лёгкий',
         medium: 'Средний',
         hard: 'Сложный',
-        difficulty: 'Сложность:',
-        desc: 'Стрелки или свайпы для управления. Собирай еду, избегай стен и хвоста!'
+        difficultyLabel: 'Сложность:',
+        desc: 'Стрелки, свайпы или тапы для управления. Собирай еду, избегай стен и хвоста!'
       },
       en: {
-        score: 'Score:',
-        best: 'Best:',
+        scoreLabel: 'Score:',
+        bestLabel: 'Best:',
+        score: 'Score',
+        best: 'Best',
+        rank: '#',
+        difficulty: 'Difficulty',
         gameOver: 'GAME OVER',
         restart: 'Play Again',
         pause: 'Pause',
         resume: 'Resume',
         scores: 'Scores',
+        highScores: 'High Scores',
         touch: 'Touch: ',
         touchOn: 'ON',
         touchOff: 'OFF',
-        highScores: 'High Scores',
-        currentScore: 'Current Score',
-        bestScore: 'Best Score',
         close: 'Close',
         easy: 'Easy',
         medium: 'Medium',
         hard: 'Hard',
-        difficulty: 'Difficulty:',
-        desc: 'Use arrow keys or swipes to control. Collect food, avoid walls and tail!'
+        difficultyLabel: 'Difficulty:',
+        desc: 'Use arrows, swipes or taps to control. Collect food, avoid walls and tail!'
       }
     }
   };
@@ -509,7 +528,7 @@
   const state = {
     canvas: null,
     ctx: null,
-    box: 20,               // Размер кубика (вычисляется)
+    box: 20,
     gridSize: SETTINGS.gridSize,
     snake: [],
     food: {},
@@ -535,12 +554,29 @@
   const $ = s => document.querySelector(s);
   const $$ = s => document.querySelectorAll(s);
 
-  // Get difficulty settings
   function getDifficultySettings() {
     return DIFFICULTIES[state.difficulty];
   }
 
-  // Load high score from localStorage
+  // Load all scores from localStorage
+  function loadAllScores() {
+    const allScores = [];
+    for (const diff of ['easy', 'medium', 'hard']) {
+      const key = `snakeScores_${diff}`;
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        const scores = JSON.parse(saved);
+        scores.forEach(s => {
+          allScores.push({ ...s, difficulty: diff });
+        });
+      }
+    }
+    // Sort by score descending
+    allScores.sort((a, b) => b.score - a.score);
+    return allScores.slice(0, SETTINGS.maxScores);
+  }
+
+  // Load high score for current difficulty
   function loadHighScore() {
     const key = `snakeHighScore_${state.difficulty}`;
     const saved = localStorage.getItem(key);
@@ -554,33 +590,35 @@
       const key = `snakeHighScore_${state.difficulty}`;
       localStorage.setItem(key, state.highScore.toString());
     }
+    
+    // Save to scores table
+    saveToScoresTable(state.score, state.difficulty);
+    
     updateScoreDisplay();
+  }
+
+  function saveToScoresTable(score, difficulty) {
+    const key = `snakeScores_${difficulty}`;
+    const saved = localStorage.getItem(key);
+    let scores = saved ? JSON.parse(saved) : [];
+    
+    scores.push({ score, difficulty, date: Date.now() });
+    scores.sort((a, b) => b.score - a.score);
+    scores = scores.slice(0, SETTINGS.maxScores);
+    
+    localStorage.setItem(key, JSON.stringify(scores));
   }
 
   function updateScoreDisplay() {
     $('#currentScore').textContent = state.score;
     $('#highScore').textContent = state.highScore;
-    $('#modalCurrentScore').textContent = state.score;
-    $('#modalHighScore').textContent = state.highScore;
-    
-    // Update difficulty labels
-    const diffSettings = getDifficultySettings();
-    $('#modalDifficulty').textContent = state.currentTexts[state.difficulty];
-    $('#modalDifficulty').className = `difficulty ${diffSettings.class}`;
-    $('#modalHighDifficulty').textContent = state.currentTexts[state.difficulty];
-    $('#modalHighDifficulty').className = `difficulty ${diffSettings.class}`;
-    $('#finalDifficulty').textContent = `${state.currentTexts.difficulty} ${diffSettings.label[state.locale]}`;
   }
 
-  // Calculate box size based on screen dimensions
   function calculateBoxSize() {
     const container = state.canvas.parentElement;
     const maxSize = Math.min(container.clientWidth, container.clientHeight);
-    
-    // Calculate box size: between minBox and maxBox
     let box = Math.floor(maxSize / state.gridSize);
     box = Math.max(SETTINGS.minBox, Math.min(SETTINGS.maxBox, box));
-    
     return box;
   }
 
@@ -618,27 +656,20 @@
     
     state.difficulty = difficulty;
     
-    // Update active button
     $$('#difficultyPanel button').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.difficulty === difficulty);
     });
     
-    // Load high score for this difficulty
     loadHighScore();
-    
-    // Restart game with new difficulty
     restartGame();
   }
 
   function resizeCanvas() {
     state.box = calculateBoxSize();
-    
-    // Set canvas size to be exactly gridSize * box
     const size = state.box * state.gridSize;
     state.canvas.width = size;
     state.canvas.height = size;
     
-    // Reset game state on resize (only if not started)
     if (state.snake.length === 0) {
       resetSnake();
     }
@@ -657,13 +688,9 @@
   // -------------------- Keyboard --------------------
   function setupKeyboard() {
     window.addEventListener('keydown', e => {
-      // Only handle arrow keys
       if (!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) return;
-      
-      // Prevent default scrolling behavior
       e.preventDefault();
       e.stopPropagation();
-      
       setDirection(e.key);
     }, { passive: false });
   }
@@ -679,7 +706,6 @@
     const newDir = map[key];
     if (!newDir) return;
     
-    // Prevent reversing direction
     const opposites = { up: 'down', down: 'up', left: 'right', right: 'left' };
     if (state.direction === opposites[newDir]) return;
     if (state.nextDirection === opposites[newDir]) return;
@@ -728,7 +754,7 @@
     });
   }
 
-  // -------------------- Touch Gestures (swipe + tap) --------------------
+  // -------------------- Touch Gestures --------------------
   function setupTouchGestures() {
     state.canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
     state.canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
@@ -754,14 +780,12 @@
     const dy = touch.clientY - state.touchStartY;
     const elapsed = Date.now() - state.lastTouchTime;
     
-    // Minimum swipe distance and maximum time for tap detection
     const minSwipe = 30;
     const maxTapTime = 250;
     const tapThreshold = 15;
     
-    // Check if it's a tap (short touch, minimal movement)
+    // Tap detection
     if (elapsed < maxTapTime && Math.abs(dx) < tapThreshold && Math.abs(dy) < tapThreshold) {
-      // Tap - determine direction based on position relative to snake head
       handleTapOnCanvas(touch.clientX, touch.clientY);
       return;
     }
@@ -769,21 +793,10 @@
     // Swipe detection
     if (Math.abs(dx) < minSwipe && Math.abs(dy) < minSwipe) return;
     
-    // Determine dominant direction based on minimum distance to 4 sides
     if (Math.abs(dx) > Math.abs(dy)) {
-      // Horizontal swipe
-      if (dx > 0) {
-        setDirection('ArrowRight');
-      } else {
-        setDirection('ArrowLeft');
-      }
+      setDirection(dx > 0 ? 'ArrowRight' : 'ArrowLeft');
     } else {
-      // Vertical swipe
-      if (dy > 0) {
-        setDirection('ArrowDown');
-      } else {
-        setDirection('ArrowUp');
-      }
+      setDirection(dy > 0 ? 'ArrowDown' : 'ArrowUp');
     }
     
     state.touchStartX = 0;
@@ -791,7 +804,6 @@
   }
 
   function handleTapOnCanvas(tapX, tapY) {
-    // Get snake head position on screen
     const head = state.snake[0];
     const rect = state.canvas.getBoundingClientRect();
     
@@ -803,27 +815,40 @@
     const relX = tapX - headX;
     const relY = tapY - headY;
     
-    // Determine which side of the head was tapped
-    // Use absolute values to find dominant direction
     const absRelX = Math.abs(relX);
     const absRelY = Math.abs(relY);
     
-    // Get current direction and possible turns
     const opposites = { up: 'down', down: 'up', left: 'right', right: 'left' };
     const currentDir = state.direction;
     
-    // Determine tap direction based on which side of head was tapped
+    // For EASY difficulty: tap anywhere on the screen side
+    // For MEDIUM/HARD: tap relative to head position
     let tapDirection;
-    if (absRelX > absRelY) {
-      // Horizontal tap (left or right of head)
-      tapDirection = relX > 0 ? 'right' : 'left';
+    
+    if (state.difficulty === 'easy') {
+      // Easy mode: divide canvas into 4 quadrants from center
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      const fromCenterX = tapX - centerX;
+      const fromCenterY = tapY - centerY;
+      
+      if (Math.abs(fromCenterX) > Math.abs(fromCenterY)) {
+        tapDirection = fromCenterX > 0 ? 'right' : 'left';
+      } else {
+        tapDirection = fromCenterY > 0 ? 'down' : 'up';
+      }
     } else {
-      // Vertical tap (above or below head)
-      tapDirection = relY > 0 ? 'down' : 'up';
+      // Medium/Hard: relative to head
+      if (absRelX > absRelY) {
+        tapDirection = relX > 0 ? 'right' : 'left';
+      } else {
+        tapDirection = relY > 0 ? 'down' : 'up';
+      }
     }
     
-    // Only change direction if it's not the opposite of current direction
-    if (tapDirection !== opposites[currentDir]) {
+    // Filter opposite direction
+    if (tapDirection && tapDirection !== opposites[currentDir]) {
       const keyMap = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
       setDirection(keyMap[tapDirection]);
     }
@@ -857,10 +882,8 @@
   function gameStep() {
     if (!state.gameRunning || state.isPaused) return;
 
-    // Update direction
     state.direction = state.nextDirection;
 
-    // Compute next head position
     const head = { x: state.snake[0].x, y: state.snake[0].y };
     
     switch (state.direction) {
@@ -870,14 +893,11 @@
       case 'right': head.x += state.box; break;
     }
 
-    // ---- Collision detection ----
-    // Wall collision
     if (head.x < 0 || head.x >= state.canvas.width || head.y < 0 || head.y >= state.canvas.height) {
       gameOver();
       return;
     }
     
-    // Self collision
     if (state.snake.some(seg => seg.x === head.x && seg.y === head.y)) {
       gameOver();
       return;
@@ -885,14 +905,12 @@
 
     state.snake.unshift(head);
 
-    // ---- Food ----
     if (head.x === state.food.x && head.y === state.food.y) {
       state.score++;
       updateScoreDisplay();
       saveHighScore();
       spawnFood();
       
-      // Increase speed (decrease delay)
       const diffSettings = getDifficultySettings();
       state.speed = Math.max(diffSettings.minSpeed, state.speed - diffSettings.speedDecrement);
       clearInterval(state.intervalId);
@@ -910,11 +928,9 @@
     const height = state.canvas.height;
     const box = state.box;
 
-    // Clear
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, width, height);
     
-    // Grid (checkerboard pattern)
     ctx.fillStyle = '#f0f9f0';
     for (let x = 0; x < width; x += box) {
       for (let y = 0; y < height; y += box) {
@@ -924,19 +940,15 @@
       }
     }
     
-    // Snake
     state.snake.forEach((seg, i) => {
-      // Head is brighter
       ctx.fillStyle = i === 0 ? '#22c55e' : '#4ade80';
       ctx.fillRect(seg.x + 1, seg.y + 1, box - 2, box - 2);
       
-      // Eyes on head
       if (i === 0) {
         ctx.fillStyle = '#000';
         const eyeSize = box / 6;
         const eyeOffset = box / 3;
         
-        // Position eyes based on direction
         let eye1x, eye1y, eye2x, eye2y;
         switch (state.direction) {
           case 'up':
@@ -961,7 +973,6 @@
       }
     });
     
-    // Food (apple)
     ctx.fillStyle = '#ef4444';
     const foodPadding = 2;
     ctx.fillRect(
@@ -971,7 +982,6 @@
       box - foodPadding * 2
     );
     
-    // Food highlight
     ctx.fillStyle = '#fca5a5';
     ctx.fillRect(
       state.food.x + foodPadding + 2,
@@ -992,16 +1002,14 @@
     
     saveHighScore();
     
-    // Update overlay
     const diffSettings = getDifficultySettings();
-    $('#finalScore').textContent = `${state.currentTexts.score.replace(':', '')}: ${state.score}`;
-    $('#finalHighScore').textContent = `${state.currentTexts.best.replace(':', '')}: ${state.highScore}`;
-    $('#finalDifficulty').textContent = `${state.currentTexts.difficulty} ${diffSettings.label[state.locale]}`;
+    $('#finalScore').textContent = `${state.currentTexts.scoreLabel.replace(':', '')}: ${state.score}`;
+    $('#finalHighScore').textContent = `${state.currentTexts.bestLabel.replace(':', '')}: ${state.highScore}`;
+    $('#finalDifficulty').textContent = `${state.currentTexts.difficultyLabel} ${diffSettings.label[state.locale]}`;
     $('#overlay').classList.add('visible');
   }
 
   function restartGame() {
-    // Reset all state
     state.score = 0;
     state.direction = 'right';
     state.nextDirection = 'right';
@@ -1013,23 +1021,14 @@
       clearInterval(state.intervalId);
     }
     
-    // Reset snake position
     resetSnake();
-    
-    // Spawn food
     spawnFood();
-    
-    // Start game loop with current difficulty
     startGameLoop();
     
-    // Update display
     updateScoreDisplay();
     updatePauseButton();
     
-    // Hide overlay
     $('#overlay').classList.remove('visible');
-    
-    // Initial draw
     draw();
   }
 
@@ -1058,15 +1057,12 @@
   function toggleLanguage() {
     state.locale = state.locale === 'ru' ? 'en' : 'ru';
     state.currentTexts = SETTINGS.texts[state.locale];
-    
-    // Update all localized elements
     updateLocalization();
   }
 
   function updateLocalization() {
     const t = state.currentTexts;
     
-    // Update button text
     $('#langToggleBtn').textContent = state.locale === 'ru' ? 'RU' : 'EN';
     $('#restartBtn').textContent = t.restart;
     $('#pauseBtn').textContent = state.isPaused ? t.resume : t.pause;
@@ -1076,26 +1072,31 @@
     $('#restartOverlayBtn').textContent = t.restart;
     $('#closeModalBtn').textContent = t.close;
     
-    // Update difficulty buttons
     $$('#difficultyPanel button').forEach(btn => {
       const diff = btn.dataset.difficulty;
       btn.textContent = t[diff];
     });
     
-    // Update overlay
     $('#overlay h1').textContent = t.gameOver;
     const diffSettings = getDifficultySettings();
-    $('#finalScore').textContent = `${t.score.replace(':', '')}: ${state.score}`;
-    $('#finalHighScore').textContent = `${t.best.replace(':', '')}: ${state.highScore}`;
-    $('#finalDifficulty').textContent = `${t.difficulty} ${diffSettings.label[state.locale]}`;
+    $('#finalScore').textContent = `${t.scoreLabel.replace(':', '')}: ${state.score}`;
+    $('#finalHighScore').textContent = `${t.bestLabel.replace(':', '')}: ${state.highScore}`;
+    $('#finalDifficulty').textContent = `${t.difficultyLabel} ${diffSettings.label[state.locale]}`;
     
-    // Update modal
     $('#modalContent h2').textContent = t.highScores;
-    $('#modalCurrentScore').previousElementSibling.textContent = t.currentScore;
-    $('#modalHighScore').previousElementSibling.previousElementSibling.textContent = t.bestScore;
     
-    // Update description
+    // Update table headers
+    const tableThs = $('#scoresTable thead tr').children;
+    tableThs[0].textContent = t.rank;
+    tableThs[1].textContent = t.score;
+    tableThs[2].textContent = t.difficulty;
+    
     updateDesc();
+    
+    // Refresh scores table if modal is open
+    if ($('#modal').classList.contains('visible')) {
+      populateScoresTable();
+    }
   }
 
   function updateDesc() {
@@ -1103,13 +1104,36 @@
   }
 
   // -------------------- Modal (Scores) --------------------
+  function populateScoresTable() {
+    const allScores = loadAllScores();
+    const tbody = $('#scoresTableBody');
+    tbody.innerHTML = '';
+    
+    const t = state.currentTexts;
+    
+    if (allScores.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="3" style="color: #aaa; padding: 1rem;">No scores yet</td></tr>`;
+      return;
+    }
+    
+    allScores.forEach((entry, index) => {
+      const diffSettings = DIFFICULTIES[entry.difficulty];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="rank">${index + 1}</td>
+        <td class="score">${entry.score}</td>
+        <td class="difficulty ${diffSettings.class}">${diffSettings.label[t.locale === 'ru' ? 'ru' : 'en']}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
   function openScoresModal() {
-    // Pause game if running
     if (state.gameRunning && !state.isPaused && !state.isGameOver) {
       togglePause();
     }
     
-    updateScoreDisplay();
+    populateScoresTable();
     $('#modal').classList.add('visible');
   }
 
@@ -1117,7 +1141,6 @@
     $('#modal').classList.remove('visible');
   }
 
-  // Close modal on outside click
   $('#modal').addEventListener('click', (e) => {
     if (e.target === $('#modal')) {
       closeScoresModal();
@@ -1127,7 +1150,6 @@
   // ====================== BOOTSTRAP ======================
   window.snakeGame = { state, SETTINGS, DIFFICULTIES };
   
-  // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
