@@ -780,17 +780,17 @@
     const dy = touch.clientY - state.touchStartY;
     const elapsed = Date.now() - state.lastTouchTime;
     
-    const minSwipe = 30;
-    const maxTapTime = 250;
-    const tapThreshold = 15;
+    const minSwipe = 20;  // Уменьшено с 30 для большей чувствительности
+    const maxTapTime = 200;  // Уменьшено с 250 для более быстрого отклика
+    const tapThreshold = 20;  // Увеличено с 15 для более надёжного определения тапа
     
-    // Tap detection
+    // Tap detection - более быстрая обработка
     if (elapsed < maxTapTime && Math.abs(dx) < tapThreshold && Math.abs(dy) < tapThreshold) {
       handleTapOnCanvas(touch.clientX, touch.clientY);
       return;
     }
     
-    // Swipe detection
+    // Swipe detection - уменьшенный порог
     if (Math.abs(dx) < minSwipe && Math.abs(dy) < minSwipe) return;
     
     if (Math.abs(dx) > Math.abs(dy)) {
@@ -833,6 +833,7 @@
       const fromCenterX = tapX - centerX;
       const fromCenterY = tapY - centerY;
       
+      // Более надёжное определение направления
       if (Math.abs(fromCenterX) > Math.abs(fromCenterY)) {
         tapDirection = fromCenterX > 0 ? 'right' : 'left';
       } else {
@@ -847,10 +848,11 @@
       }
     }
     
-    // Filter opposite direction
+    // Filter opposite direction - немедленная смена направления
     if (tapDirection && tapDirection !== opposites[currentDir]) {
       const keyMap = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
-      setDirection(keyMap[tapDirection]);
+      // Прямое изменение nextDirection для мгновенного отклика
+      state.nextDirection = keyMap[tapDirection];
     }
   }
 
@@ -1062,37 +1064,45 @@
 
   function updateLocalization() {
     const t = state.currentTexts;
-    
+
     $('#langToggleBtn').textContent = state.locale === 'ru' ? 'RU' : 'EN';
     $('#restartBtn').textContent = t.restart;
     $('#pauseBtn').textContent = state.isPaused ? t.resume : t.pause;
     $('#scoresBtn').textContent = t.scores;
-    $('#toggleTouchBtn').textContent = t.touch + 
+    $('#toggleTouchBtn').textContent = t.touch +
       (state.useTouchControls ? t.touchOn : t.touchOff);
     $('#restartOverlayBtn').textContent = t.restart;
     $('#closeModalBtn').textContent = t.close;
     
+    // Update score panel labels
+    $$('span.label[data-i18n="scoreLabel"]').forEach(el => {
+      el.textContent = t.scoreLabel;
+    });
+    $$('span.label[data-i18n="bestLabel"]').forEach(el => {
+      el.textContent = t.bestLabel;
+    });
+
     $$('#difficultyPanel button').forEach(btn => {
       const diff = btn.dataset.difficulty;
       btn.textContent = t[diff];
     });
-    
+
     $('#overlay h1').textContent = t.gameOver;
     const diffSettings = getDifficultySettings();
     $('#finalScore').textContent = `${t.scoreLabel.replace(':', '')}: ${state.score}`;
     $('#finalHighScore').textContent = `${t.bestLabel.replace(':', '')}: ${state.highScore}`;
     $('#finalDifficulty').textContent = `${t.difficultyLabel} ${diffSettings.label[state.locale]}`;
-    
+
     $('#modalContent h2').textContent = t.highScores;
-    
+
     // Update table headers
     const tableThs = $('#scoresTable thead tr').children;
     tableThs[0].textContent = t.rank;
     tableThs[1].textContent = t.score;
     tableThs[2].textContent = t.difficulty;
-    
+
     updateDesc();
-    
+
     // Refresh scores table if modal is open
     if ($('#modal').classList.contains('visible')) {
       populateScoresTable();
