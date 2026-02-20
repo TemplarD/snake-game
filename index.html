@@ -28,10 +28,11 @@
     border-radius: 8px;
     margin-bottom: 0.4rem;
     flex-shrink: 0;
+    justify-content: center;
   }
   #difficultyPanel button {
-    padding: 0.35rem 0.6rem;
-    font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
     border: 2px solid transparent;
     border-radius: 6px;
     background: rgba(255,255,255,0.15);
@@ -40,7 +41,9 @@
     transition: all 0.2s;
     font-weight: 500;
     white-space: nowrap;
-    min-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
   }
   #difficultyPanel button:hover {
     background: rgba(255,255,255,0.25);
@@ -56,15 +59,19 @@
   /* Score panel */
   #scorePanel {
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 0.8rem;
     padding: 0.4rem 0.8rem;
     background: rgba(255,255,255,0.1);
     border-radius: 8px;
     margin-bottom: 0.4rem;
-    font-size: clamp(0.85rem, 2.2vw, 1.1rem);
+    font-size: 0.95rem;
     position: relative;
     flex-shrink: 0;
-    min-height: 40px;
+    min-height: 36px;
+    max-width: 600px;
+    width: 95%;
   }
   #helpBtn {
     position: absolute;
@@ -130,16 +137,17 @@
     gap: 0.4rem;
     justify-content: center;
     width: 100%;
-    max-width: min(600px, 90vw);
+    max-width: 600px;
     margin-top: 0.4rem;
     flex-shrink: 0;
-    min-height: 44px;
+    min-height: 40px;
   }
   #controls button {
-    flex: 1 1 calc(20% - 0.4rem);
-    min-width: 70px;
-    padding: 0.6rem 0.4rem;
-    font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+    flex: 1 1 auto;
+    min-width: 65px;
+    max-width: 120px;
+    padding: 0.55rem 0.3rem;
+    font-size: 0.75rem;
     border: none;
     border-radius: 8px;
     background: linear-gradient(145deg, #3b82f6, #2563eb);
@@ -149,6 +157,8 @@
     transition: all 0.2s;
     font-weight: 500;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   #controls button:hover {
     background: linear-gradient(145deg, #2563eb, #1d4ed8);
@@ -883,6 +893,9 @@
 
   function handleTouchStart(e) {
     e.preventDefault();
+    // Проверка что игра активна перед обработкой
+    if (!state.gameRunning || state.isPaused || state.isGameOver) return;
+    
     const touch = e.changedTouches[0];
     state.touchStartX = touch.clientX;
     state.touchStartY = touch.clientY;
@@ -891,30 +904,33 @@
 
   function handleTouchEnd(e) {
     e.preventDefault();
+    // Проверка что игра активна
+    if (!state.gameRunning || state.isPaused || state.isGameOver) return;
+    
     const touch = e.changedTouches[0];
     const dx = touch.clientX - state.touchStartX;
     const dy = touch.clientY - state.touchStartY;
     const elapsed = Date.now() - state.lastTouchTime;
-    
-    const minSwipe = 20;  // Уменьшено с 30 для большей чувствительности
-    const maxTapTime = 200;  // Уменьшено с 250 для более быстрого отклика
-    const tapThreshold = 20;  // Увеличено с 15 для более надёжного определения тапа
-    
-    // Tap detection - более быстрая обработка
+
+    const minSwipe = 20;
+    const maxTapTime = 200;
+    const tapThreshold = 20;
+
+    // Tap detection
     if (elapsed < maxTapTime && Math.abs(dx) < tapThreshold && Math.abs(dy) < tapThreshold) {
       handleTapOnCanvas(touch.clientX, touch.clientY);
       return;
     }
-    
-    // Swipe detection - уменьшенный порог
+
+    // Swipe detection
     if (Math.abs(dx) < minSwipe && Math.abs(dy) < minSwipe) return;
-    
+
     if (Math.abs(dx) > Math.abs(dy)) {
       setDirection(dx > 0 ? 'ArrowRight' : 'ArrowLeft');
     } else {
       setDirection(dy > 0 ? 'ArrowDown' : 'ArrowUp');
     }
-    
+
     state.touchStartX = 0;
     state.touchStartY = 0;
   }
@@ -1337,27 +1353,34 @@
     
     $('#helpModal h2').textContent = t.help;
     
-    const objectiveH3 = $('#helpModalContent h3[data-i18n="objective"]');
-    if (objectiveH3) objectiveH3.textContent = t.objective;
+    // Обновляем заголовки секций
+    const h3Tags = $('#helpModalContent').querySelectorAll('h3');
+    h3Tags[0].textContent = t.objective;
+    h3Tags[1].textContent = t.controls;
+    h3Tags[2].textContent = t.difficulty;
     
-    const objList = $('#helpModalContent h3[data-i18n="objective"]').nextElementSibling;
-    if (objList) {
-      objList.children[0].textContent = t.obj1;
-      objList.children[1].textContent = t.obj2;
-      objList.children[2].textContent = t.obj3;
+    // Обновляем списки
+    const ulTags = $('#helpModalContent').querySelectorAll('ul');
+    
+    // Objective list (3 items)
+    if (ulTags[0]) {
+      ulTags[0].children[0].textContent = t.obj1;
+      ulTags[0].children[1].textContent = t.obj2;
+      ulTags[0].children[2].textContent = t.obj3;
     }
     
-    const controlsH3 = $('#helpModalContent h3[data-i18n="controls"]');
-    if (controlsH3) controlsH3.textContent = t.controls;
+    // Controls list (4 items - first has keyboard, rest are text)
+    if (ulTags[1]) {
+      ulTags[1].children[1].textContent = t.ctrl1;
+      ulTags[1].children[2].textContent = t.ctrl2;
+      ulTags[1].children[3].textContent = t.ctrl3;
+    }
     
-    const diffH3 = $('#helpModalContent h3[data-i18n="difficulty"]');
-    if (diffH3) diffH3.textContent = t.difficulty;
-    
-    const diffList = $('#helpModalContent h3[data-i18n="difficulty"]').nextElementSibling;
-    if (diffList) {
-      diffList.children[0].textContent = t.diff1;
-      diffList.children[1].textContent = t.diff2;
-      diffList.children[2].textContent = t.diff3;
+    // Difficulty list (3 items)
+    if (ulTags[2]) {
+      ulTags[2].children[0].textContent = t.diff1;
+      ulTags[2].children[1].textContent = t.diff2;
+      ulTags[2].children[2].textContent = t.diff3;
     }
   }
 
