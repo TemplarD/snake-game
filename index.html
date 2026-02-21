@@ -28,8 +28,8 @@
     -moz-osx-font-smoothing: grayscale;
   }
   
-  /* Telegram browser warning */
-  #telegramWarning {
+  /* Telegram/WebView browser warning */
+  #browserWarning {
     display: none;
     position: fixed;
     top: 0;
@@ -41,24 +41,24 @@
     padding: 20px;
     text-align: center;
   }
-  #telegramWarning.visible {
+  #browserWarning.visible {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
-  #telegramWarning h2 {
+  #browserWarning h2 {
     color: #fbbf24;
     margin-bottom: 20px;
     font-size: 24px;
   }
-  #telegramWarning p {
+  #browserWarning p {
     color: #fff;
     margin-bottom: 15px;
     font-size: 16px;
     line-height: 1.5;
   }
-  #telegramWarning button {
+  #browserWarning button {
     background: linear-gradient(145deg, #22c55e, #16a34a);
     color: #fff;
     border: none;
@@ -503,12 +503,12 @@
 </head>
 <body>
 
-<!-- Telegram Browser Warning -->
-<div id="telegramWarning">
-  <h2>⚠️ Браузер Telegram</h2>
-  <p>Игра не работает во встроенном браузере Telegram.</p>
-  <p>Пожалуйста, откройте игру в Safari:</p>
-  <button onclick="openInSafari()">🧭 Открыть в Safari</button>
+<!-- Browser Warning for WebView/Telegram/etc -->
+<div id="browserWarning">
+  <h2>⚠️ Встроенный браузер</h2>
+  <p>Игра не работает во встроенных браузерах.</p>
+  <p>Пожалуйста, откройте в обычном браузере:</p>
+  <button onclick="openInBrowser()">🌐 Открыть в браузере</button>
 </div>
 
 <!-- Difficulty Panel -->
@@ -821,28 +821,42 @@
     return box;
   }
 
-  // ====================== TELEGRAM DETECTION ======================
-  function isTelegramBrowser() {
+  // ====================== BROWSER DETECTION ======================
+  function isWebView() {
     const ua = navigator.userAgent || navigator.vendor || window.opera;
-    return /Telegram/i.test(ua);
+    
+    // Telegram
+    if (/Telegram/i.test(ua)) return true;
+    
+    // Facebook/Instagram
+    if (/FBAN|FBA|Instagram/i.test(ua)) return true;
+    
+    // Android WebView
+    if (/wv|Version\/[\d.]+.*Chrome/i.test(ua)) return true;
+    
+    // iOS WebView (no Safari, Chrome, Firefox, but has Apple)
+    if (/AppleWebKit/i.test(ua) && !/Safari|Chrome|CriOS|FxiOS/i.test(ua)) return true;
+    
+    return false;
   }
 
-  function openInSafari() {
-    // Try to open in Safari using different methods
+  function openInBrowser() {
     const currentUrl = window.location.href;
     
-    // For iOS - use safari:// protocol
-    window.location.href = 'safari://' + currentUrl;
+    // Try to open in default browser
+    if (window.open) {
+      window.open(currentUrl, '_blank');
+    }
     
-    // Fallback - try to open in system browser
+    // For iOS - try safari://
     setTimeout(() => {
-      window.open(currentUrl, '_system');
-    }, 500);
+      window.location.href = currentUrl;
+    }, 1000);
   }
 
-  function showTelegramWarning() {
-    if (isTelegramBrowser()) {
-      $('#telegramWarning').classList.add('visible');
+  function showBrowserWarning() {
+    if (isWebView()) {
+      $('#browserWarning').classList.add('visible');
     }
   }
 
@@ -1455,8 +1469,8 @@
   // ====================== BOOTSTRAP ======================
   window.snakeGame = { state, SETTINGS, DIFFICULTIES };
 
-  // Показываем предупреждение для Telegram браузера
-  showTelegramWarning();
+  // Показываем предупреждение для встроенных браузеров
+  showBrowserWarning();
 
   // Инициализация после загрузки DOM
   if (document.readyState === 'loading') {
