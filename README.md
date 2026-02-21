@@ -24,6 +24,25 @@ open index.html              # macOS
 start index.html             # Windows
 ```
 
+### ⚠️ Важно: Встроенные браузеры
+
+**Игра НЕ работает во встроенных браузерах:**
+- ❌ Telegram
+- ❌ Facebook/Instagram
+- ❌ Android WebView
+- ❌ iOS Safari WebView
+
+**Как правильно открыть:**
+
+1. **Скопируйте URL** игры
+2. **Вставьте в Safari/Chrome** на вашем устройстве
+3. **ИЛИ** нажмите "Поделиться" → "Открыть в Safari"
+
+**Для GitHub:**
+- Откройте репозиторий в браузере
+- Включите GitHub Pages в настройках
+- Откройте ссылку `https://yourusername.github.io/snake-game` в Safari/Chrome
+
 ### Вариант 2: Локальный сервер
 ```bash
 # Установите зависимости
