@@ -38,10 +38,8 @@ start index.html             # Windows
 2. **Вставьте в Safari/Chrome** на вашем устройстве
 3. **ИЛИ** нажмите "Поделиться" → "Открыть в Safari"
 
-**Для GitHub:**
-- Откройте репозиторий в браузере
-- Включите GitHub Pages в настройках
-- Откройте ссылку `https://yourusername.github.io/snake-game` в Safari/Chrome
+**Для открытия ссылкой**
+- Откройте ссылку `https://templard.github.io/snake-game` в Safari/Chrome
 
 ### Вариант 2: Локальный сервер
 ```bash
