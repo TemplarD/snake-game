@@ -3,16 +3,15 @@
 <head>
 <meta charset='UTF-8'>
 <title>Snake Game</title>
-<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no'>
 <style>
   * { box-sizing: border-box; margin: 0; }
   html {
     font-size: 16px;
-    zoom: 1;
   }
   html, body {
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     font-family: system-ui, -apple-system, sans-serif;
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     display: flex;
@@ -23,6 +22,7 @@
     color: #fff;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
   
   /* Difficulty buttons */
@@ -123,7 +123,14 @@
     max-width: min(600px, 90vw);
     aspect-ratio: 1/1;
     position: relative;
-    margin: 0.4rem 0;
+    margin: 8px 0;
+  }
+  /* Fallback for older browsers without aspect-ratio support */
+  @supports not (aspect-ratio: 1/1) {
+    #gameContainer {
+      padding-bottom: 100%;
+      height: 0;
+    }
   }
   canvas {
     background: #fff;
@@ -133,6 +140,8 @@
     width: 100%;
     height: 100%;
     box-shadow: 0 4px 20px rgba(74, 222, 128, 0.3);
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 
   /* Controls */
@@ -749,7 +758,8 @@
     const container = state.canvas.parentElement;
     const maxSize = Math.min(container.clientWidth, container.clientHeight);
     let box = Math.floor(maxSize / state.gridSize);
-    box = Math.max(SETTINGS.minBox, Math.min(SETTINGS.maxBox, box));
+    // Минимальный размер кубика для маленьких экранов
+    box = Math.max(10, Math.min(SETTINGS.maxBox, box));
     return box;
   }
 
@@ -797,14 +807,18 @@
 
   function resizeCanvas() {
     state.box = calculateBoxSize();
-    const size = state.box * state.gridSize;
+    
+    // Минимальный размер для маленьких экранов
+    const minSize = 200;
+    const size = Math.max(minSize, state.box * state.gridSize);
+    
     state.canvas.width = size;
     state.canvas.height = size;
-    
+
     if (state.snake.length === 0) {
       resetSnake();
     }
-    
+
     draw();
   }
 
