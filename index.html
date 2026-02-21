@@ -28,6 +28,47 @@
     -moz-osx-font-smoothing: grayscale;
   }
   
+  /* Telegram browser warning */
+  #telegramWarning {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.95);
+    z-index: 10000;
+    padding: 20px;
+    text-align: center;
+  }
+  #telegramWarning.visible {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  #telegramWarning h2 {
+    color: #fbbf24;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  #telegramWarning p {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  #telegramWarning button {
+    background: linear-gradient(145deg, #22c55e, #16a34a);
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
   /* Difficulty buttons */
   #difficultyPanel {
     display: flex;
@@ -462,6 +503,14 @@
 </head>
 <body>
 
+<!-- Telegram Browser Warning -->
+<div id="telegramWarning">
+  <h2>⚠️ Браузер Telegram</h2>
+  <p>Игра не работает во встроенном браузере Telegram.</p>
+  <p>Пожалуйста, откройте игру в Safari:</p>
+  <button onclick="openInSafari()">🧭 Открыть в Safari</button>
+</div>
+
 <!-- Difficulty Panel -->
 <div id="difficultyPanel">
   <button data-difficulty="easy" data-i18n="easy">Лёгкий</button>
@@ -770,6 +819,31 @@
     // Минимальный размер кубика для маленьких экранов
     box = Math.max(10, Math.min(SETTINGS.maxBox, box));
     return box;
+  }
+
+  // ====================== TELEGRAM DETECTION ======================
+  function isTelegramBrowser() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    return /Telegram/i.test(ua);
+  }
+
+  function openInSafari() {
+    // Try to open in Safari using different methods
+    const currentUrl = window.location.href;
+    
+    // For iOS - use safari:// protocol
+    window.location.href = 'safari://' + currentUrl;
+    
+    // Fallback - try to open in system browser
+    setTimeout(() => {
+      window.open(currentUrl, '_system');
+    }, 500);
+  }
+
+  function showTelegramWarning() {
+    if (isTelegramBrowser()) {
+      $('#telegramWarning').classList.add('visible');
+    }
   }
 
   // ====================== CORE LOGIC ======================
@@ -1380,6 +1454,9 @@
 
   // ====================== BOOTSTRAP ======================
   window.snakeGame = { state, SETTINGS, DIFFICULTIES };
+
+  // Показываем предупреждение для Telegram браузера
+  showTelegramWarning();
 
   // Инициализация после загрузки DOM
   if (document.readyState === 'loading') {
