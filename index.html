@@ -783,12 +783,6 @@
     }
     
     state.ctx = state.canvas.getContext('2d');
-    
-    // Проверка что контекст получен
-    if (!state.ctx) {
-      console.error('Could not get canvas context!');
-      return;
-    }
 
     setupDifficultyButtons();
     loadHighScore();
